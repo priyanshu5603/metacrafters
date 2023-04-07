@@ -1,3 +1,53 @@
 https://colab.research.google.com/drive/1-4qtGFA_Vj6itYRR1OjBU-zn-1_pEcbI?usp=sharing
 
 ABOVE IS LINK TO COLAB NOTEBOOK
+
+
+!pip install numpy
+!pip install pandas
+!pip install scikit-learn
+!pip install openai
+import pandas as pd
+import numpy as np
+import json
+import openai
+from sklearn.metrics.pairwise import cosine_similarity
+import os
+
+CHUNK_SIZE = 600
+OVERLAP = 20
+openai.api_key = input("Paste your OpenAI API key here and to give your wand the magical powers and press enter:");
+scripts = json.load(open("all_scripts_raw.json", encoding='ascii')) # https://www.kaggle.com/datasets/gjbroughton/start-trek-scripts?resource=download
+text = scripts['TNG']['episode 99']
+text_list = text.split()
+chunks = [text_list[i:i+CHUNK_SIZE] for i in range(0, len(text_list), CHUNK_SIZE-OVERLAP)]
+df = pd.DataFrame(columns=['chunk', 'gpt_raw', 'embedding'])
+for chunk in chunks:
+    f = openai.Embedding.create(
+        model="text-embedding-ada-002",
+        input=" ".join(chunk),
+    )
+    df.loc[len(df.index)] = (chunk, f, np.array(f['data'][0]['embedding']))
+df.head()
+query = "Who is jabara and how is he related to latara?"
+f = openai.Embedding.create(
+    model="text-embedding-ada-002",
+    input=query
+)
+query_embedding = np.array(f['data'][0]['embedding'])
+
+similarity = []
+for arr in df['embedding'].values:
+    similarity.extend(cosine_similarity(query_embedding.reshape(1, -1), arr.reshape(1, -1)))
+context_chunk = chunks[np.argmax(similarity)]
+
+query_to_send = "CONTEXT: " + " ".join(context_chunk) + "\n\n" + query
+response = openai.Completion.create(
+  model="text-davinci-003",
+  prompt= query_to_send,
+  max_tokens=100,
+  temperature=0
+)
+print(query_to_send)
+print(response['choices'][0]['text'].strip())
+

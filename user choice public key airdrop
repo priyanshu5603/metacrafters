@@ -1,6 +1,0 @@
-let userInput = prompt("Enter a public key:");
-let PublicKey = Number(userInput);
-const fromAirDropSignature = await connection.requestAirdrop(
-    new PublicKey(PublicKey),
-    2 * LAMPORTS_PER_SOL
-);

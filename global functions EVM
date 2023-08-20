@@ -1,0 +1,18 @@
+//SPDX-License-Identifier:MIT
+pragma solidity ^0.8.0;
+
+contract task3
+{
+    function addr(address p) public view returns(uint256)
+    {
+        return p.balance;
+    }
+    function blk() public view returns(uint256)
+    {
+        return block.gaslimit;
+    }function mssg() public view returns(uint256)
+    {
+        return gasleft();
+    }
+
+}

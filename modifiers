@@ -1,0 +1,23 @@
+//SPDX-License-Identifier:MIT
+pragma solidity ^0.8.0;
+
+contract task_1 {
+    uint a;
+    
+    address owner;
+
+    constructor()
+    {
+        owner = msg.sender;
+    }
+    modifier new11
+    {
+        require(owner==msg.sender,"invalid user");
+        _;
+    }
+    function new12(uint a1) public new11
+    {
+        a=a1;
+    }
+}
+

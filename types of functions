@@ -1,0 +1,35 @@
+//SPDX-License-Identifier:MIT
+
+pragma solidity ^0.8.0;
+
+contract task2
+{
+    uint public constant a = 10;
+    uint public  balance = 10;
+    uint public  b = 10;
+    
+    function f1() pure external returns(uint)
+    {
+        return a;
+    }
+    function f2(uint c) view external returns(uint)
+    {
+        return a+b+c;
+    }
+    function f3()  external returns(uint)
+    {
+        b++;
+        return b;
+    }
+     function f4(address p) public payable  returns(uint)
+    {
+        
+        return p.balance;
+    }
+    function f5(address p) public payable  returns(uint)
+    {
+        balance  = balance + p.balance;
+        return balance;
+    }
+
+}
